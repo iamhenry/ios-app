@@ -10,6 +10,13 @@
   "plugin": [
     "@tarquinen/opencode-dcp@latest" // (https://github.com/Tarquinen/opencode-dynamic-context-pruning)
   ],
+  "mcp": {
+    "astro": {
+      "type": "remote",
+      "url": "http://127.0.0.1:8089/mcp",
+      "enabled": true
+    }
+  },
   "compaction": {
     "auto": false
   },
