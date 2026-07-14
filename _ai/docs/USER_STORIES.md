@@ -2,13 +2,13 @@
 
 Build the smallest end-to-end proof for a **Scan-Verified Offline QR Maker** for iOS in the US. A small-business owner enters one URL, applies constrained color or logo styling, creates a high-resolution PNG, verifies that the exact final PNG decodes locally to the intended canonical URL, and shares it through iOS.
 
-**Leading unvalidated hypothesis:** Exact-export payload verification, paired with conservative styling constraints, can improve confidence before a QR code is printed. A local pass proves only that the final PNG decodes to the intended URL in the app; it does not prove that a screen or printed copy will scan reliably with real-world scanners.
+**Evidence-backed wedge; unvalidated product hypothesis:** Current evidence supports exact-export verification as a Medium-strength wedge. The product hypothesis remains unvalidated: exact-export payload verification, paired with conservative styling constraints, can improve confidence before a QR code is printed. A local pass proves only that the final PNG decodes to the intended URL in the app; it does not prove that a screen or printed copy will scan reliably with real-world scanners.
 
-The tracer bullet includes one direct/static URL payload, constrained styling, high-resolution PNG export, local exact-file verification, actionable failure guidance, iOS sharing, and an offline happy path. It excludes dynamic destinations, hosted redirects, accounts, analytics, broad templates, other payloads, scanner or history features, cloud dependencies, SVG, and monetization stories.
+The tracer bullet includes one direct/static URL payload, constrained styling, high-resolution PNG export, local exact-file verification, actionable failure guidance, iOS sharing, and offline generation, export, and verification. It excludes dynamic destinations, hosted redirects, accounts, QR-provider scan analytics, broad templates, other payloads, scanner or history features, cloud dependencies, SVG, and monetization stories. Loading the destination website is outside the offline flow and requires internet access and an available website.
 
 Evidence and hypothesis traceability:
 - [Phase 1 opportunity research](../../app-tiny-bets-reports/2026-07-11-mixed-discovery-research.md)
-- [Preliminary wedge brief](../../app-tiny-bets-reports/2026-07-13-scan-verified-offline-qr-maker-wedge-brief.md)
+- [Current wedge brief](../../app-tiny-bets-reports/2026-07-13-scan-verified-offline-qr-maker-wedge-brief.md)
 
 # Scenarios
 
@@ -21,6 +21,7 @@ Evidence and hypothesis traceability:
 
 **Acceptance Criteria**:
 - Creation requires no account, network connection, hosted redirect, or app-controlled intermediary domain.
+- The QR directly encodes the canonical destination and has no app-imposed expiry; destination availability remains outside the app's control.
 
 ### Scenario SCN-02: Apply supported color and logo styling
 **Given** a QR for one direct URL<br>
@@ -44,8 +45,9 @@ Evidence and hypothesis traceability:
 **Then** the same file that passed verification is available to share elsewhere
 
 **Acceptance Criteria**:
-- Any shared file is the same file that passed verification.
-- The complete offline happy path can be completed in under 60 seconds.
+- The file the app supplies to the iOS share sheet is the same exact PNG that passed verification.
+- The app's guarantee applies only to that exact PNG, not to later resizing, editing, or file conversion.
+- Generation, export, verification, and opening the iOS share sheet can be completed offline in under 60 seconds; delivery through a selected share service and opening the destination website are outside this flow.
 
 ## Error
 
@@ -71,10 +73,10 @@ Evidence and hypothesis traceability:
 ### Scenario SCN-07: Validate local passes across realistic inputs
 **Given** locally passing artifacts for short and long URLs across all allowed style combinations in the agreed validation matrix<br>
 **When** each artifact is scanned from both screen and print using Apple Camera and two independent scanners<br>
-**Then** every scan reaches the intended URL
+**Then** every scanner decodes the intended canonical URL
 
 **Acceptance Criteria**:
-- Any local-pass external failure stops continuation and triggers research.
+- Any local-pass failure to decode externally stops continuation and triggers research.
 
 ### Scenario SCN-08: Distinguish local verification from physical scan confidence
 **Given** an exact-file verification result<br>
@@ -90,7 +92,7 @@ Evidence and hypothesis traceability:
 1. **Offline happy path:** Enter valid URL -> apply an allowed color or logo style -> render high-resolution PNG -> decode the exact final PNG -> compare canonical destination -> show local pass and its limitation -> open iOS share sheet.
 2. **Input/style recovery:** Enter invalid URL or apply unsafe style -> show the specific constraint and corrective action -> revise input/style -> retry rendering and verification.
 3. **Verification recovery:** Exact PNG fails to decode or payload differs -> show actionable failure -> return to preserved URL/style -> revise -> regenerate and verify again.
-4. **Hypothesis validation gate:** Generate short/long URL artifacts across allowed and deliberately unsafe styles -> require unsafe styles to fail locally -> test every local pass on screen and print with Apple Camera and two independent scanners -> continue only if every local pass succeeds externally; otherwise stop and research.
+4. **Hypothesis validation gate:** Generate short/long URL artifacts across allowed and deliberately unsafe styles -> require unsafe styles to fail locally -> test every local pass on screen and print with Apple Camera and two independent scanners -> continue only if every scanner decodes the intended canonical URL; otherwise stop and research.
 
 # Key Screens
 
